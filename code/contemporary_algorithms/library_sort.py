@@ -1,98 +1,112 @@
-import random
-import bisect
-import math
-
 def run(arr):
-    return library_sort(arr)
+    arr_ = arr[:]
+    # return test_sort(arr_)
+    return library_sort(arr_)
 
 def library_sort(arr, epsilon=0.5):
     n = len(arr)
-    if n == 0:
-        return []
-    A = arr[:]
-    random.shuffle(A)
+    
+    S_size = int((2 + 2 * epsilon) * n)
+    S = [None] * S_size
+    
+    S[0] = arr[0]
+    positions = [0]
+    
     m = 1
-    size = int((1 + epsilon) * m) + 1
-    S = [None] * size
-    pos_list = []
-    sorted_vals = []
-    mid = size // 2
-    S[mid] = A[0]
-    pos_list.append(mid)
-    sorted_vals.append(A[0])
-    i = 1
-    while i < n:
-        round_inserts = min(m, n - i)
-        for _ in range(round_inserts):
-            x = A[i]
-            i += 1
-            idx = bisect.bisect_left(sorted_vals, x)
-            if idx == 0:
-                base = pos_list[0]
-                gap_found = False
-                for j in range(base - 1, -1, -1):
-                    if S[j] is None:
-                        pos = j
-                        gap_found = True
-                        break
-                if not gap_found:
-                    for j in range(base + 1, size):
-                        if S[j] is None:
-                            pos = j
-                            gap_found = True
-                            break
-                if not gap_found:
-                    raise Exception("Gap not found")
-            elif idx == len(sorted_vals):
-                base = pos_list[-1]
-                gap_found = False
-                for j in range(base + 1, size):
-                    if S[j] is None:
-                        pos = j
-                        gap_found = True
-                        break
-                if not gap_found:
-                    for j in range(base - 1, -1, -1):
-                        if S[j] is None:
-                            pos = j
-                            gap_found = True
-                            break
-                if not gap_found:
-                    raise Exception("Gap not found")
-            else:
-                left_bound = pos_list[idx - 1]
-                right_bound = pos_list[idx]
-                pos = None
-                for j in range(left_bound + 1, right_bound):
-                    if S[j] is None:
-                        pos = j
-                        break
-                if pos is None:
-                    for j in range(right_bound, size):
-                        if S[j] is None:
-                            pos = j
-                            break
-                    if pos is None:
-                        for j in range(left_bound, -1, -1):
-                            if S[j] is None:
-                                pos = j
-                                break
-                    if pos is None:
-                        raise Exception("Gap not found")
-            S[pos] = x
-            bisect.insort(pos_list, pos)
-            sorted_vals.insert(bisect.bisect_left(sorted_vals, x), x)
-        m = len(sorted_vals)
-        if i < n:
-            new_size = int((2 + 2 * epsilon) * m) + 1
-            new_S = [None] * new_size
-            new_pos_list = []
-            gap = new_size / m
-            for k in range(m):
-                new_index = int(round(gap / 2 + k * gap))
-                new_S[new_index] = sorted_vals[k]
-                new_pos_list.append(new_index)
-            S = new_S
-            pos_list = new_pos_list
-            size = new_size
-    return sorted_vals
+    
+    while m < n:
+        next_m = min(2 * m, n)
+        for i in range(m, next_m):
+            attempt_insert(S, positions, arr[i])
+        
+        new_active_length = int((2 + 2 * epsilon) * next_m)
+        S, positions = rebalance(S, positions, next_m, new_active_length)
+        m = next_m
+    
+    result = []
+    for i in range(len(S)):
+        if S[i] is not None:
+            result.append(S[i])
+    return result
+
+def attempt_insert(S, positions, key):
+    pos_index = binary_search_positions(S, positions, key)
+    
+    insert_idx = find_insert_pos(positions, pos_index)
+    
+    if 0 <= insert_idx < len(S) and S[insert_idx] is None:
+        S[insert_idx] = key
+    else:
+        pos = insert_idx
+        while pos < len(S) and S[pos] is not None:
+            pos += 1
+        
+        for i in range(pos, insert_idx, -1):
+            S[i] = S[i - 1]
+        for i in range(len(positions)):
+            if positions[i] >= insert_idx and positions[i] <= pos:
+                positions[i] += 1
+        S[insert_idx] = key
+    
+    insert_in_list(positions, pos_index, insert_idx)
+
+def binary_search_positions(S, positions, key):
+    l, r = 0, len(positions)
+    while l < r:
+        mid = (l + r) // 2
+        if S[positions[mid]] <= key:
+            l = mid + 1
+        else:
+            r = mid
+    return l
+
+def find_insert_pos(positions, pos_index):
+    if pos_index == 0:
+        return 0
+    else:
+        return positions[pos_index-1] + 1
+
+def rebalance(S, positions, m, new_active_length):
+    new_S = [None] * len(S)
+    new_positions = []
+    
+    spacing = new_active_length / float(m)
+    
+    for i in range(m):
+        old_idx = positions[i]
+        val = S[old_idx]
+
+        place_index = int((i + 0.5) * spacing)
+        if place_index >= len(new_S):
+            place_index = len(new_S) - 1
+
+        new_S[place_index] = val
+        new_positions.append(place_index)
+    
+    return new_S, new_positions
+
+
+
+def test_sort(arr):
+    result = [arr[0]]
+    for i in range(1, len(arr)):
+        pos = test_binary_search(result, arr[i])
+        insert_in_list(result, pos, arr[i])
+    return result
+
+def test_binary_search(arr, key):
+    low = 0
+    high = len(arr) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] < key:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return low
+
+def insert_in_list(lst, insert_index, value):
+    lst.append(None)
+    for i in range(len(lst) - 1, insert_index, -1):
+        lst[i] = lst[i - 1]
+    lst[insert_index] = value

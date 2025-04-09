@@ -1,9 +1,9 @@
 def run(arr):
-    return comb_sort(arr)
+    arr_ = arr[:]
+    return comb_sort(arr_)
 
 def comb_sort(arr):
-    a = arr[:]
-    n = len(a)
+    n = len(arr)
     gap = n
     shrink = 1.3
     sorted_flag = False
@@ -14,8 +14,8 @@ def comb_sort(arr):
             sorted_flag = True
         i = 0
         while i + gap < n:
-            if a[i] > a[i+gap]:
-                a[i], a[i+gap] = a[i+gap], a[i]
+            if arr[i] > arr[i+gap]:
+                arr[i], arr[i+gap] = arr[i+gap], arr[i]
                 sorted_flag = False
             i += 1
-    return a
+    return arr

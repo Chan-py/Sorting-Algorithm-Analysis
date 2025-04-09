@@ -3,12 +3,19 @@ def run(arr):
     Heap_sort(arr_)
     return arr_
 
+import heapq
+def heap_sort_lib(arr):
+    heapq.heapify(arr)
+    result = [heapq.heappop(arr) for _ in range(len(arr))]
+    return result
+
 def Heap_sort(arr):
     n = len(arr)
     Build_Max_Heap(arr, n)
     for i in range(n-1, 0, -1):
         arr[0], arr[i] = arr[i], arr[0]
         Max_Heapify(arr, i, 0)
+    return arr
 
 
 def Max_Heapify(A, n, i):

@@ -3,6 +3,56 @@ def run(arr):
     timsort(arr_)
     return arr_
 
+def timsort(arr):
+    n = len(arr)
+    if n <= 1:
+        return
+
+    min_run = calc_min_run(n)
+    runs = []
+    i = 0
+
+    while i < n:
+        run_start = i
+        i += 1
+        
+        if i < n:
+            if arr[i] < arr[i - 1]:
+                while i < n and arr[i] <= arr[i - 1]:
+                    i += 1
+                arr[run_start:i] = arr[run_start:i][::-1]
+            else:
+                while i < n and arr[i] >= arr[i - 1]:
+                    i += 1
+        
+        run_end = i - 1
+        run_len = run_end - run_start + 1
+        
+        if run_len < min_run:
+            end = min(run_start + min_run - 1, n - 1)
+            insertion_sort_binary(arr, run_start, end)
+            run_end = end
+            i = end + 1
+        
+        runs.append((run_start, run_end))
+    
+    size = len(runs)
+    while size > 1:
+        merged_runs = []
+        i = 0
+        while i < size:
+            if i == size - 1:
+                merged_runs.append(runs[i])
+                i += 1
+            else:
+                left_start, left_end = runs[i]
+                right_start, right_end = runs[i + 1]
+                merge(arr, left_start, left_end, right_end)
+                merged_runs.append((left_start, right_end))
+                i += 2
+        runs = merged_runs
+        size = len(runs)
+
 def binary_search(arr, left, right, key):
     while left <= right:
         mid = (left + right) // 2
@@ -43,38 +93,9 @@ def merge(arr, p, q, r):
             arr[k] = R[j]
             j += 1
 
-def timsort(arr):
-    n = len(arr)
-    if n <= 1:
-        return 
-
-    runs = []
-    run_start = 0
-
-    for i in range(1, n):
-        if arr[i] < arr[i - 1]:
-            runs.append((run_start, i - 1))
-            run_start = i
-        
-        if i == n - 1:
-            runs.append((run_start, i))
-    
-    for (start, end) in runs:
-        insertion_sort_binary(arr, start, end)
-    
-    size = len(runs)
-    while size > 1:
-        merged_runs = []
-        i = 0
-        while i < size:
-            if i == size - 1:
-                merged_runs.append(runs[i])
-            else:
-                left_start, left_end = runs[i]
-                right_start, right_end = runs[i + 1]
-                merge(arr, left_start, left_end, right_end)
-                merged_runs.append((left_start, right_end))
-                i += 1
-            i += 1
-        runs = merged_runs
-        size = len(runs)
+def calc_min_run(n):
+    r = 0
+    while n >= 64:
+        r |= n & 1
+        n //= 2
+    return n + r
