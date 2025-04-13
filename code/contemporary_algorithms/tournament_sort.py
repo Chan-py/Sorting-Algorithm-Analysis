@@ -1,6 +1,6 @@
 def run(arr):
     arr_ = arr[:]
-    return tournament_sort(arr)
+    return tournament_sort(arr_)
 
 def tournament_sort(arr):
     n = len(arr)

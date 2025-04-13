@@ -2,8 +2,8 @@ import random
 
 def run(arr):
     arr_ = arr[:]
-    # quick_sort(arr_, 0, len(arr_) - 1)
-    dual_pivot_quick_sort(arr_, 0, len(arr_) - 1)
+    quick_sort(arr_, 0, len(arr_) - 1)
+    # dual_pivot_quick_sort(arr_, 0, len(arr_) - 1)
     return arr_
 
 def quick_sort(A, p, r):
@@ -92,5 +92,5 @@ def quick_sort_DS(arr, left, right):
 
         arr[left], arr[j] = arr[j], arr[left]
 
-        quick_sort(arr, left, j - 1)
-        quick_sort(arr, j + 1, right)
+        quick_sort_DS(arr, left, j - 1)
+        quick_sort_DS(arr, j + 1, right)

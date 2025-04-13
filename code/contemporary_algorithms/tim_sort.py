@@ -30,7 +30,7 @@ def timsort(arr):
         
         if run_len < min_run:
             end = min(run_start + min_run - 1, n - 1)
-            insertion_sort_binary(arr, run_start, end)
+            insertion_sort(arr, run_start, end)
             run_end = end
             i = end + 1
         
@@ -52,6 +52,17 @@ def timsort(arr):
                 i += 2
         runs = merged_runs
         size = len(runs)
+
+def insertion_sort(arr, left, right):
+    for i in range(left + 1, right + 1):
+        key = arr[i]
+        j = i - 1
+        # 배열의 [left .. (i-1)] 구간에서 key의 위치를 찾는다
+        while j >= left and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
 
 def binary_search(arr, left, right, key):
     while left <= right:

@@ -1,8 +1,7 @@
 def run(arr):
     arr_ = arr[:]
     n = len(arr_)
-    # merge_sort(arr_, 0, n-1)
-    merge_sort_3(arr_, 0, n-1)
+    merge_sort(arr_, 0, n-1)
     return arr_
 
 
@@ -14,7 +13,6 @@ def merge_sort(arr, p, r):
     merge_sort(arr, p, mid)
     merge_sort(arr, mid + 1, r)
 
-    # merge_with_no_sentinel(arr, p, mid, r)
     merge(arr, p, mid, r)
 
 def merge_sort_without_sentinel(arr, p, r):
@@ -26,7 +24,6 @@ def merge_sort_without_sentinel(arr, p, r):
     merge_sort(arr, mid + 1, r)
 
     merge_with_no_sentinel(arr, p, mid, r)
-    # merge(arr, p, mid, r)
 
 
 def merge(arr, p, q, r):
