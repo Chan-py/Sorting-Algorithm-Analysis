@@ -7,7 +7,7 @@ from utils import check_sorted, read_list_from_txt
 parser = argparse.ArgumentParser()
 parser.add_argument("--algorithm", type=str, default="merge",
                     help="sorting algorithm")
-parser.add_argument("--list", type=str, default="../dataset/real/100K_random.txt",
+parser.add_argument("--list", type=str, default="../dataset/real/100K_reverse_sorted.txt",
                     help="testcase file")
 args = parser.parse_args()
 

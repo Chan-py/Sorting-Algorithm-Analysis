@@ -1,9 +1,17 @@
 import random
 
-num = 2000000
+num = 100000
 data = []
+left = 0
+right = num
 for i in range(num):
-    data.append(random.randint(1, 10000))
+    if i % 2 == 0:
+        data.append(left)
+        left += 1
+    else:
+        data.append(right)
+        right -= 1
+    # data.append(random.randint(1, 10000))
 
-with open("testcase3.txt", 'w') as f:
+with open("testcase_lib.txt", 'w') as f:
     f.write(' '.join(map(str, data)))

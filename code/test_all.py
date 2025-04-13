@@ -42,7 +42,7 @@ n2_algos = {"bubble_sort", "insertion_sort", "selection_sort",
 all_results = {}
 
 # 4) 각 데이터셋에 대해 실행
-for ds in dataset[15:]:
+for ds in dataset[17:]:
     print("Current dataset : ", ds)
     # 텍스트 파일에서 데이터 읽어오기
     arr = read_list_from_txt(f"../dataset/real/{ds}.txt")
@@ -92,7 +92,7 @@ for ds in dataset[15:]:
     all_results[ds] = ds_result
 
     # 5) all_results를 파일에 저장
-    with open("../test_result/results_2.json", "w") as f:
+    with open("../test_result/results_3.json", "w") as f:
         json.dump(all_results, f, indent=4)
 
 print("All experiments completed. Results saved to results.txt.")

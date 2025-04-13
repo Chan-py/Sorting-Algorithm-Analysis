@@ -6,11 +6,12 @@ import sys
 sys.setrecursionlimit(10**6)
 
 dataset = []
-arr = read_list_from_txt("../dataset/real/1K_same_element.txt")
+arr = read_list_from_txt("../dataset/real/1K_random.txt")
 
 result_a = []
 result_b = []
 for i in range(10):
+    print("Current iteration : ", i+1)
     arr_a = arr[:]
     n = len(arr_a)
     start_time = time.time()
@@ -21,9 +22,9 @@ for i in range(10):
     arr_b = arr[:]
     n = len(arr_b)
     start_time = time.time()
-    quick_sort.quick_sort_DS(arr_b, 0, n-1)
+    quick_sort.dual_pivot_quick_sort(arr_b, 0, n-1)
     end_time = time.time()
     result_b.append(end_time - start_time)
 
-print(sum(result_a) / 10)
-print(sum(result_b) / 10)
+print(sum(result_a) / len(result_a))
+print(sum(result_b) / len(result_b))
